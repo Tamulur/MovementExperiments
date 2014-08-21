@@ -6,11 +6,6 @@ public class ControlCamera : MonoBehaviour
 
 	#region fields
 	
-		const bool kUseDarkness = true;
-		
-		int layerMaskAll;
-		int layerMaskUIonly;
-	
 		public bool useStrobing
 		{
 			get {  return _useStrobing; }
@@ -20,11 +15,8 @@ public class ControlCamera : MonoBehaviour
 						_useStrobing = value;
 
 						if ( false == _useStrobing )
-						{
 							darknessGO.SetActive ( false );
-							eyeCamera.cullingMask = layerMaskAll;
-						}
-				}
+					}
 				}
 		}
 			bool _useStrobing;
@@ -40,8 +32,6 @@ public class ControlCamera : MonoBehaviour
 	void Awake()
 	{
 		eyeCamera = camera;
-		layerMaskUIonly = Layers.Mask( Layers.Layer.UI );
-		layerMaskAll = ~Layers.Mask ( Layers.Layer.PlayerHead );
 		darknessGO = transform.Find ("Darkness").gameObject;
 	}
 	
@@ -54,10 +44,7 @@ public class ControlCamera : MonoBehaviour
 			
 		isShowing = false;
 		
-		if ( kUseDarkness )
-			darknessGO.SetActive ( true );
-		else
-			eyeCamera.cullingMask = layerMaskUIonly;
+		darknessGO.SetActive ( true );
 	}
 	
 	
@@ -69,9 +56,6 @@ public class ControlCamera : MonoBehaviour
 			
 		isShowing = true;
 		
-		if ( kUseDarkness )
-			darknessGO.SetActive ( false );
-		else
-			eyeCamera.cullingMask = layerMaskAll;
+		darknessGO.SetActive ( false );
 	}
 }

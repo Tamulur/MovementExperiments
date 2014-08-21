@@ -33,7 +33,7 @@ public class MotionController : MonoBehaviour
 		
 		const float kStrobeTime = 0.05f;
 		int kShowFrames = 10;
-		int kHideFrames = 10;
+		int kHideFrames = 30;
 	
 		Animator animator;
 		CharacterController characterController;
@@ -127,7 +127,7 @@ public class MotionController : MonoBehaviour
 		float forwardSpeed = 0;
 		float sideSpeed = 0;
 		float direction = 0;
-		bool isRunning  = false;
+		bool isRunning = Input.GetKey (KeyCode.LeftShift );
 		bool isMovingOrTurning = false;
 		
 		//*** forward speed
@@ -162,6 +162,7 @@ public class MotionController : MonoBehaviour
 		
 		float totalSpeed = new Vector2( sideSpeed, forwardSpeed).magnitude;
 		animator.SetFloat("speed", ((forwardSpeed >= 0) ? 1 : -1) * totalSpeed);
+		animator.SetBool ("run", isRunning);
 		
 		float runFactor = isRunning ? 2.5f : 1;
 		
