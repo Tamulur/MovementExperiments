@@ -19,7 +19,8 @@ public class Player : MonoBehaviour
 		enum ControlMode {
 			Standard,
 			CanvasTexture,
-			ThirdPerson
+			ThirdPerson,
+			Stroboscopic
 		}
 		ControlMode controlMode = ControlMode.Standard;
 		
@@ -33,6 +34,7 @@ public class Player : MonoBehaviour
 		State state = State.Normal;
 		
 		GoTween stateTween;
+		
 		
 	#endregion
 	
@@ -76,14 +78,25 @@ public class Player : MonoBehaviour
 			case ControlMode.ThirdPerson:
 				transform.parent = null;
 				motionController.Deactivate();
-				Singletons.guiManager.ShowMessage("Third Person Control:\n" +
-				                                  "Keep right mouse button\n"+	
-				                                  "pressed and move your avatar,\n" +
-				                                  "then release to teleport your view.", duration: 5);
+				Singletons.guiManager.ShowMessage(	"Third Person Control:\n" +
+																	"Keep right mouse button\n"+	
+																	"pressed and move your avatar,\n" +
+																	"then release to teleport your view.", duration: 5);
+			break;
+			
+			case ControlMode.Stroboscopic:
+				TeleportViewToAvatar();
+				transform.parent = originalParentXform;
+				motionController.Activate();
+				Singletons.guiManager.ShowMessage (	"Stroboscopic:\n" +
+																	"7: decrease ShownFrames\n" +
+																	"8: increase ShownFrames\n" +
+																	"9: decrease HiddenFrames\n" +
+																	"0: increase HiddenFrames\n", duration: 5);
 			break;
 		}
 		
-		
+		motionController.useStrobing = controlMode == ControlMode.Stroboscopic;
 	}
 	
 	
@@ -163,8 +176,8 @@ public class Player : MonoBehaviour
 	
 	void ShowControlMenu( float duration = 3)
 	{
-		string oT1, cT1, oT2, cT2, oT3, cT3;
-		oT1 = cT1 = oT2 = cT2 = oT3 = cT3 = "";
+		string oT1, cT1, oT2, cT2, oT3, cT3, oT4, cT4;
+		oT1 = cT1 = oT2 = cT2 = oT3 = cT3 = oT4 = cT4 = "";
 		
 				const string kSelectedOpenTag = "<b><color=\"#00CCFF\">";
 				const string kSelectedCloseTag = "</color></b>";
@@ -183,11 +196,17 @@ public class Player : MonoBehaviour
 			oT3 = kSelectedOpenTag;
 			cT3 = kSelectedCloseTag;
 		}
+		else if ( controlMode == ControlMode.Stroboscopic )
+		{
+			oT4 = kSelectedOpenTag;
+			cT4 = kSelectedCloseTag;
+		}
 		
 		Singletons.guiManager.ShowMessage (	"Control Mode:\n\n" +	
 															oT1 + "1: Standard" + cT1 + "\n" +
 															oT2 + "2: Canvas" + cT2 + "\n" +
-															oT3 + "3: Third person" + cT3,
+															oT3 + "3: Third person" + cT3 + "\n" +
+															oT4 + "4: Stroboscopic" + cT4,
 															duration: duration,
 															notificationMode: GUIManager.NotificationMode.FadeInOut );
 	}
@@ -221,11 +240,13 @@ public class Player : MonoBehaviour
 			ChangeControlMode ( ControlMode.CanvasTexture );
 		else if ( isNormalMode && hasRecentered && Input.GetKeyDown ( KeyCode.Alpha3 ) )
 			ChangeControlMode ( ControlMode.ThirdPerson );
+		else if ( isNormalMode && hasRecentered && Input.GetKeyDown ( KeyCode.Alpha4 ) )
+			ChangeControlMode ( ControlMode.Stroboscopic );
 		else if ( Input.GetKeyDown (KeyCode.Space))
 		{
 			Reset();
 			
-			if ( false == hasRecentered )
+			if ( false == OVRDevice.HMD.GetHSWDisplayState().Displayed && false == hasRecentered )
 			{
 				ShowControlMenu( duration: 3 );
 				hasRecentered = true;

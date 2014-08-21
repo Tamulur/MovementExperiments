@@ -15,17 +15,42 @@ public class MotionController : MonoBehaviour
 			}
 		}
 		
+			bool _useStrobing;
+		public bool useStrobing {
+			get { return _useStrobing; }
+			set {
+				_useStrobing = value;
+				isShowingFrames = true;
+				lastFrameShownTime = 0;
+				framesShown = framesHidden = 0;
+				framesOfNotMoving = 0;
+			}
+		}
+				
 		const float kForwardSpeedFactor = 1.3f;
 		const float kMouseSensitivity = 1.25f;
+		
+		
+		const float kStrobeTime = 0.05f;
+		int kShowFrames = 10;
+		int kHideFrames = 10;
 	
 		Animator animator;
 		CharacterController characterController;
 		SoundSource footstepSoundLeft;
 		SoundSource footstepSoundRight;
-//		ControlCamera controlCameraLeft;
-//		ControlCamera controlCameraRight;
+		ControlCamera controlCameraLeft;
+		ControlCamera controlCameraRight;
 
 		CanvasSphere canvasSphere;
+		
+		int framesShown;
+		int framesHidden;
+		float lastFrameShownTime;
+		bool isShowingFrames;
+		
+		int framesOfNotMoving;
+		
 		
 		float timeSinceLastLeftFootstep;
 		float timeSinceLastRightFootstep;
@@ -49,8 +74,8 @@ public class MotionController : MonoBehaviour
 		characterController = GetComponent<CharacterController>();
 		canvasSphere = GetComponentInChildren<CanvasSphere>();
 		
-//		controlCameraLeft = transform.Find ("OVRCameraController/CameraLeft").GetComponent<ControlCamera>();
-//		controlCameraRight = transform.Find ("OVRCameraController/CameraRight").GetComponent<ControlCamera>();
+		controlCameraLeft = transform.Find ("OVR_anchor/OVRCameraController/CameraLeft").GetComponent<ControlCamera>();
+		controlCameraRight = transform.Find ("OVR_anchor/OVRCameraController/CameraRight").GetComponent<ControlCamera>();
 	}
 	
 	
@@ -82,6 +107,14 @@ public class MotionController : MonoBehaviour
 			timeSinceLastRightFootstep = 0;
 			footstepSoundRight.Play();
 		}
+	}
+	
+	
+	
+	void ShowFrameNumbers()
+	{
+		Singletons.guiManager.ShowMessage(	"ShowFrames: " + kShowFrames + "\n"+
+															"HideFrames: " + kHideFrames);
 	}
 	
 	
@@ -147,11 +180,64 @@ public class MotionController : MonoBehaviour
 
 		canvasSphere.shouldBeShown = useCanvas && isMovingOrTurning;
 			
-//		controlCameraLeft.useCanvas = useCanvas && isMovingOrTurning;
-//		controlCameraRight.useCanvas = useCanvas && isMovingOrTurning;
+		if ( false == isMovingOrTurning )
+			framesOfNotMoving++;
+		else
+			framesOfNotMoving = 0;
+			
+		bool shouldStrobe = useStrobing && framesOfNotMoving <= 3;
+		controlCameraLeft.useStrobing = shouldStrobe;
+		controlCameraRight.useStrobing = shouldStrobe;
 		
+		
+		if ( Input.GetKeyDown (KeyCode.Alpha7 ) )
+		{
+			kShowFrames = Mathf.Max(1, kShowFrames - 1 );
+			ShowFrameNumbers();
+		}
+		else if ( Input.GetKeyDown (KeyCode.Alpha8 ))
+		{
+			kShowFrames++;
+			ShowFrameNumbers();
+		}
+		else if ( Input.GetKeyDown (KeyCode.Alpha9 ) )
+		{
+			kHideFrames = Mathf.Max (1, kHideFrames - 1);
+			ShowFrameNumbers();
+		}
+		else if ( Input.GetKeyDown (KeyCode.Alpha0))
+		{
+			kHideFrames++;
+			ShowFrameNumbers();
+		}
+		
+		
+		if ( shouldStrobe )
+		{
+			if ( isShowingFrames )
+			{
+				controlCameraLeft.TurnOnForThisFrame();
+				controlCameraRight.TurnOnForThisFrame();
+				framesShown++;
+				if ( framesShown >= kShowFrames )
+				{
+					isShowingFrames = false;
+					framesShown = framesHidden = 0;
+				}
+			}
+			else
+			{
+				controlCameraLeft.TurnOffForThisFrame();
+				controlCameraRight.TurnOffForThisFrame();
+				framesHidden++;
+				if ( framesHidden >= kHideFrames )
+				{
+					isShowingFrames = true;
+					framesShown = framesHidden = 0;
+				}
+			}
+		}
 	}
-	
 	
 	
 }

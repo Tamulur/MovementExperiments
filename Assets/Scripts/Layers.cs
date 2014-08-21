@@ -8,7 +8,7 @@ public class Layers
 		Ignore_Raycast		= 2,
 		Builtin_3					= 3,
 		Water					= 4,
-		Builtin_5					= 5,
+		UI							= 5,
 		Builtin_6					= 6,
 		Builtin_7					= 7,
 		PlayerMain				= 8,
