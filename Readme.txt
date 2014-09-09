@@ -1,4 +1,4 @@
-Movement Experiments v0.2
+Movement Experiments v0.4
 
 Miniexperiment to test different movement systems to reduce simulator sickness.
 
@@ -14,6 +14,7 @@ Keyboard controls:
 
 Canvas mode:
 	When you move or turn, a canvas that is anchored to your avatar's body is partly faded in. The idea is that this makes the VR world look like it is projected onto a screen and the screen provides a frame of reference: when you turn, the world doesn't turn around you, but only its projection on the screen turns. The screen is still relative to your avatar body, so your visual and vestibular system don't get conflicting input.
+	Press G to cycle through different canvas textures.
 
 Third person mode:
 	To move, keep the right mouse button pressed. The environment will be shown in an ambient occlusion rendering style. With the right mouse button pressed, use WASD to move your avatar and the mouse to turn it. Your viewpoint itself doesn't move, but you can keep looking around with your head. To teleport your view into the avatar's new position, release the right mouse button.
@@ -36,4 +37,6 @@ Player's footsteps: cris http://freesound.org/people/cris/sounds/167686/
 
 Changelog:
 
+0.4: Added different canvas textures to cycle through. 3rd person mode starts a bit behind the avatar.
+0.3: New Oculus SDK 0.4.2
 0.2: Added stroboscopic mode.

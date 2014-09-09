@@ -28,7 +28,7 @@ public class MotionController : MonoBehaviour
 		}
 				
 		const float kForwardSpeedFactor = 1.3f;
-		const float kMouseSensitivity = 1.25f;
+		const float kMouseSensitivity = 1.75f;
 		
 		
 		const float kStrobeTime = 0.05f;

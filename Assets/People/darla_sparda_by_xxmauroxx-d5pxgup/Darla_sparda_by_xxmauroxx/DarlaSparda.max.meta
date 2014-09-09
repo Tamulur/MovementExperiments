@@ -1537,6 +1537,8 @@ ModelImporter:
     101924: unused spine upper copy
     101926: unused059
     101928: unused075
+    101930: EyeLeft
+    101932: EyeRight
     400000: arm left elbow
     400002: arm left finger 1a
     400004: arm left finger 1b
@@ -3071,6 +3073,8 @@ ModelImporter:
     401924: unused spine upper copy
     401926: unused059
     401928: unused075
+    401930: EyeLeft
+    401932: EyeRight
     4300000: Object001
     4300002: Object002
     4300004: Object003
@@ -3085,6 +3089,8 @@ ModelImporter:
     4300022: Object012
     4300024: Object013
     4300026: Object014
+    4300028: EyeRight
+    4300030: EyeLeft
     9500000: //RootNode
     13700000: Object001
     13700002: Object002
@@ -3100,6 +3106,8 @@ ModelImporter:
     13700022: Object012
     13700024: Object013
     13700026: Object014
+    13700028: EyeLeft
+    13700030: EyeRight
   materials:
     importMaterials: 1
     materialName: 0
@@ -3207,14 +3215,6 @@ ModelImporter:
         modified: 0
     - boneName: spine upper
       humanName: Chest
-      limit:
-        min: {x: 0, y: 0, z: 0}
-        max: {x: 0, y: 0, z: 0}
-        value: {x: 0, y: 0, z: 0}
-        length: 0
-        modified: 0
-    - boneName: head neck lower
-      humanName: Neck
       limit:
         min: {x: 0, y: 0, z: 0}
         max: {x: 0, y: 0, z: 0}
@@ -3559,6 +3559,14 @@ ModelImporter:
         modified: 0
     - boneName: arm right finger 5c
       humanName: Right Little Distal
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: head neck lower
+      humanName: Neck
       limit:
         min: {x: 0, y: 0, z: 0}
         max: {x: 0, y: 0, z: 0}

@@ -6,6 +6,8 @@ public class CanvasSphere : MonoBehaviour
 {
 	#region fields
 	
+		public Texture2D[] textures;
+
 		const float kShownAlpha = 73.0f/255.0f;
 		
 		public bool shouldBeShown { get; set;  }
@@ -20,7 +22,8 @@ public class CanvasSphere : MonoBehaviour
 		}
 		
 		Material canvasMaterial;
-	
+		int textureIndex;
+		bool isGrid;
 		
 	#endregion
 	
@@ -36,9 +39,18 @@ public class CanvasSphere : MonoBehaviour
 	
 	void Update()
 	{
-		float targetAlpha = shouldBeShown ? kShownAlpha : 0;
+		float targetAlpha = shouldBeShown ? (isGrid ? 1 : kShownAlpha) : 0;
 		float speed = targetAlpha < alpha ? 0.5f : 1;
 		alpha = Mathf.Lerp ( alpha, targetAlpha, Time.unscaledDeltaTime * 10 * speed);
+
+		if ( Input.GetKeyDown( KeyCode.G ) )
+		{
+			textureIndex = (textureIndex+1) % textures.Length;
+			canvasMaterial.mainTexture = textures[textureIndex];
+			Singletons.guiManager.ShowMessage("Canvas texture: " + textureIndex);
+			isGrid = textureIndex >= 5;
+		}
+
 	}
 	
 }

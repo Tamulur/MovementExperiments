@@ -63,7 +63,9 @@ public class PlayerHead : MonoBehaviour
 		
 		
 		//anchorBoneTransform.rotation = lookRotation * Quaternion.Euler(euler);
-		anchorBoneTransform.rotation = Quaternion.FromToRotation( ovrXform.forward, transform.forward) *  lookRotation * headCorrectionRot;
+		anchorBoneTransform.rotation = transform.rotation * Quaternion.Inverse( ovrXform.rotation ) *
+		//Quaternion.FromToRotation( ovrXform.forward, transform.forward) *
+		  lookRotation * headCorrectionRot;
 	}
 	
 	

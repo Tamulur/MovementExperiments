@@ -68,20 +68,28 @@ public class Player : MonoBehaviour
 		switch ( controlMode )
 		{
 			case ControlMode.Standard:
-			case ControlMode.CanvasTexture:
 				TeleportViewToAvatar();
 				transform.parent = originalParentXform;
 				motionController.Activate();
 				ShowControlMenu( duration: 0.75f );
+			break;
+
+			case ControlMode.CanvasTexture:
+				TeleportViewToAvatar();
+				transform.parent = originalParentXform;
+				motionController.Activate();
+				Singletons.guiManager.ShowMessage("Canvas mode:\n" +
+																		"Press G to cycle through\n" +
+																		"different canvas textures.", duration: 5);
 			break;
 				
 			case ControlMode.ThirdPerson:
 				transform.parent = null;
 				motionController.Deactivate();
 				Singletons.guiManager.ShowMessage(	"Third Person Control:\n" +
-																	"Keep right mouse button\n"+	
-																	"pressed and move your avatar,\n" +
-																	"then release to teleport your view.", duration: 5);
+																		"Keep right mouse button\n"+	
+																		"pressed and move your avatar,\n" +
+																		"then release to teleport your view.", duration: 5);
 			break;
 			
 			case ControlMode.Stroboscopic:
@@ -89,10 +97,10 @@ public class Player : MonoBehaviour
 				transform.parent = originalParentXform;
 				motionController.Activate();
 				Singletons.guiManager.ShowMessage (	"Stroboscopic:\n" +
-																	"7: decrease ShownFrames\n" +
-																	"8: increase ShownFrames\n" +
-																	"9: decrease HiddenFrames\n" +
-																	"0: increase HiddenFrames\n", duration: 5);
+																			"7: decrease ShownFrames\n" +
+																			"8: increase ShownFrames\n" +
+																			"9: decrease HiddenFrames\n" +
+																			"0: increase HiddenFrames\n", duration: 5);
 			break;
 		}
 		
@@ -118,6 +126,14 @@ public class Player : MonoBehaviour
 	
 	void FadeToGhostMode()
 	{
+			//*** Place camera behind the avatar, so we can see him turning in place
+			{
+				Vector3 horizViewDirection = playerHead.lookDirection;
+				horizViewDirection.y = 0;
+				horizViewDirection.Normalize();
+				transform.position = transform.position -1.5f * horizViewDirection + 0.0f * Vector3.up;
+			}
+
 		ChangeToState( State.FadingToGhostMode );
 		
 		Singletons.timeManager.WarpTimeIn( onComplete: OnTimeWarpedIn );
@@ -152,6 +168,7 @@ public class Player : MonoBehaviour
 	void OnTimeWarpedIn()
 	{
 		ChangeToState( State.GhostMode );
+
 		motionController.Activate();
 	}
 	
@@ -248,7 +265,7 @@ public class Player : MonoBehaviour
 			
 			if ( false == OVRDevice.HMD.GetHSWDisplayState().Displayed && false == hasRecentered )
 			{
-				ShowControlMenu( duration: 3 );
+				ShowControlMenu( duration: 5 );
 				hasRecentered = true;
 			}
 		}
