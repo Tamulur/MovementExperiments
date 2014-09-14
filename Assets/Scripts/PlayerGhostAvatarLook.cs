@@ -35,7 +35,7 @@ public class PlayerGhostAvatarLook : MonoBehaviour
 		animator = GetComponent<Animator>();
 		playerHead = GetComponent<PlayerHead>();
 		
-		ghostAvatar = GameObject.FindObjectOfType<GhostAvatar>();
+		ghostAvatar = FindObjectOfType<GhostAvatar>();
 				
 		Singletons.timeManager.OnTimeWarpChangedEvent += OnTimeWarpChanged;
 	}
