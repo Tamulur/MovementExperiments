@@ -32,8 +32,8 @@ public class MotionController : MonoBehaviour
 		
 		
 		const float kStrobeTime = 0.05f;
-		int kShowFrames = 10;
-		int kHideFrames = 30;
+		int kShowFrames = 11;
+		int kHideFrames = 6;
 	
 		Animator animator;
 		CharacterController characterController;
@@ -72,10 +72,11 @@ public class MotionController : MonoBehaviour
 		footstepSoundRight = transform.Find("FootstepSoundRight").GetComponent<SoundSource>();
 		animator = GetComponent<Animator>();
 		characterController = GetComponent<CharacterController>();
+		characterController.Move(Vector3.zero);
 		canvasSphere = GetComponentInChildren<CanvasSphere>();
 		
-		controlCameraLeft = transform.Find ("OVR_anchor/OVRCameraController/CameraLeft").GetComponent<ControlCamera>();
-		controlCameraRight = transform.Find ("OVR_anchor/OVRCameraController/CameraRight").GetComponent<ControlCamera>();
+		controlCameraLeft = transform.Find ("OVR_anchor/OVRCameraRig/LeftEyeAnchor").GetComponent<ControlCamera>();
+		controlCameraRight = transform.Find ("OVR_anchor/OVRCameraRig/RightEyeAnchor").GetComponent<ControlCamera>();
 	}
 	
 	
@@ -121,6 +122,9 @@ public class MotionController : MonoBehaviour
 	
 	void Update()
 	{
+		if ( false == Singletons.gameManager.isGameStarted )
+			return;
+
 		timeSinceLastLeftFootstep += Time.deltaTime;
 		timeSinceLastRightFootstep += Time.deltaTime;
 		

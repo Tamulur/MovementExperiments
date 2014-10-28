@@ -6,8 +6,8 @@ using System.Collections.Generic;
 public class EnvironmentAO : MonoBehaviour
 {
 	#region fields
-	
-		List<Material> aoMaterials = new List<Material>();
+
+		readonly List<Material> aoMaterials = new List<Material>();
 		Transform playerXform;
 		Transform goalXform;
 	
@@ -23,7 +23,7 @@ public class EnvironmentAO : MonoBehaviour
 		if ( goalGO != null )
 			goalXform = goalGO.transform;
 			
-		playerXform = GameObject.FindObjectOfType<Player>().transform;
+		playerXform = FindObjectOfType<Player>().transform;
 		
 		foreach ( Renderer rend in GetComponentsInChildren<Renderer>() )
 			foreach ( Material mat in rend.materials )

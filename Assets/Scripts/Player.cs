@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 
 
@@ -11,10 +12,10 @@ public class Player : MonoBehaviour
 
 		Animator animator;
 		PlayerHead playerHead;
-		bool hasRecentered;
 		MotionController motionController;
 		Transform originalParentXform;
 		Transform avatarXform;
+		HoloGrid darkness;
 		
 		
 		enum ControlMode {
@@ -47,8 +48,7 @@ public class Player : MonoBehaviour
 	
 	void Awake()
 	{
-		Screen.showCursor = false;
-		Screen.lockCursor = true;
+		darkness = MiscUtils.FindChildInHierarchy(gameObject, "CenterEyeAnchor").transform.Find("Darkness").GetComponent<HoloGrid>();
 		
 		avatarXform = GameObject.Find("Player").transform;
 		ghostAvatar = FindObjectOfType<GhostAvatar>();
@@ -60,6 +60,7 @@ public class Player : MonoBehaviour
 		originalParentXform = transform.parent;
 		
 		Singletons.timeManager.OnTimeWarpChangedEvent += OnTimeWarpChanged;
+		Singletons.gameManager.OnGameStart += OnGameStart;
 	}
 	
 	
@@ -146,6 +147,29 @@ public class Player : MonoBehaviour
 	
 	
 	
+	public void FadeFromDark( Action onComplete, float duration=2 )
+	{
+		darkness.SetUseTransparentShader( true );
+
+		Singletons.soundManager.TweenVolumeTo(1, duration);
+		darkness.TweenTo( 0, duration: duration, onComplete: () => {	darkness.Deactivate();
+																										onComplete(); });
+	}
+
+
+
+	public void FadeToDark( Action onComplete )
+	{
+		darkness.SetUseTransparentShader( true );
+
+				const float kDuration = 2;
+		Singletons.soundManager.TweenVolumeTo(0, kDuration);
+		darkness.TweenTo( 1, duration: kDuration, onComplete: () => {	darkness.SetUseTransparentShader( false );
+																										onComplete(); });
+	}
+
+
+
 	void FadeToGhostMode()
 	{
 		if ( controlMode == ControlMode.ThirdPerson )
@@ -189,6 +213,13 @@ public class Player : MonoBehaviour
 	
 	
 	
+	void OnGameStart()
+	{
+		ShowControlMenu();
+	}
+
+
+
 	void OnTimeWarpChanged ( float timeWarp01, float absoluteTimeWarp )
 	{ }
 	
@@ -221,14 +252,15 @@ public class Player : MonoBehaviour
 	
 	
 	
-	void Reset()
+	public void SetToDark()
 	{
-		OVRDevice.ResetOrientation();
-		playerHead.Reset();
-	}
-	
-	
-	
+		darkness.Activate( 1 );
+		darkness.SetUseTransparentShader( false );
+		Singletons.soundManager.volume = 0;
+	}	
+
+
+
 	void ShowControlMenu( float duration = 3)
 	{
 		string oT1, cT1, oT2, cT2, oT3, cT3, oT4, cT4, oT5, cT5;
@@ -311,6 +343,9 @@ public class Player : MonoBehaviour
 	
 	void Update()
 	{
+		if ( false == Singletons.gameManager.isGameStarted )
+			return;
+
 				bool controlModeUsesRightMouseButton = controlMode == ControlMode.ThirdPerson || controlMode == ControlMode.StepTeleport;
 		if ( controlModeUsesRightMouseButton && Input.GetMouseButtonDown( 1 ) )
 			FadeToGhostMode( );
@@ -319,17 +354,15 @@ public class Player : MonoBehaviour
 			
 		bool isNormalMode = state == State.Normal;
 		
-		if (Input.GetKeyDown(KeyCode.Escape))
-			Application.Quit();
-		else if ( isNormalMode && hasRecentered && Input.GetKeyDown ( KeyCode.Alpha1 ) )
+		if ( isNormalMode && Input.GetKeyDown ( KeyCode.Alpha1 ) )
 			ChangeControlMode( ControlMode.Standard );
-		else if ( isNormalMode && hasRecentered && Input.GetKeyDown ( KeyCode.Alpha2 ) )
+		else if ( isNormalMode && Input.GetKeyDown ( KeyCode.Alpha2 ) )
 			ChangeControlMode ( ControlMode.CanvasTexture );
-		else if ( isNormalMode && hasRecentered && Input.GetKeyDown ( KeyCode.Alpha3 ) )
+		else if ( isNormalMode && Input.GetKeyDown ( KeyCode.Alpha3 ) )
 			ChangeControlMode ( ControlMode.ThirdPerson );
-		else if ( isNormalMode && hasRecentered && Input.GetKeyDown ( KeyCode.Alpha4 ) )
+		else if ( isNormalMode && Input.GetKeyDown ( KeyCode.Alpha4 ) )
 			ChangeControlMode ( ControlMode.StepTeleport );
-		else if ( isNormalMode && hasRecentered && Input.GetKeyDown ( KeyCode.Alpha5 ) )
+		else if ( isNormalMode && Input.GetKeyDown ( KeyCode.Alpha5 ) )
 			ChangeControlMode ( ControlMode.Stroboscopic );
 
 		else if ( controlMode == ControlMode.StepTeleport && Input.GetKeyDown( KeyCode.Alpha9 ) )
@@ -351,17 +384,6 @@ public class Player : MonoBehaviour
 		{
 			ghostAvatar.stepSize = Mathf.Min( 10f, ghostAvatar.stepSize + 0.2f );
 			Singletons.guiManager.ShowMessage("Stepsize: " + ghostAvatar.stepSize);
-		}
-
-		else if ( Input.GetKeyDown (KeyCode.Space))
-		{
-			Reset();
-			
-			if ( false == OVRDevice.HMD.GetHSWDisplayState().Displayed && false == hasRecentered )
-			{
-				ShowControlMenu( duration: 5 );
-				hasRecentered = true;
-			}
 		}
 	}
 	

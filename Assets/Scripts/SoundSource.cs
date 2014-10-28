@@ -10,6 +10,7 @@ public class SoundSource : MonoBehaviour
 		public bool isMusic = false;
 		public AudioClip[] clips;
 		new AudioSource audio;
+		float originalVolume;
 	
 		public bool isPlaying {
 			get { return audio.isPlaying; }
@@ -32,7 +33,9 @@ public class SoundSource : MonoBehaviour
 	void Awake ()
 	{
 		audio = base.audio;
+		originalVolume = audio.volume;
 		Singletons.timeManager.OnTimeWarpChangedEvent += OnTimeWarpChanged;
+		Singletons.soundManager.OnVolumeChanged += OnVolumeChanged;
 	}
 	
 	
@@ -47,7 +50,10 @@ public class SoundSource : MonoBehaviour
 	void OnDestroy ()
 	{
 		if ( Singletons.timeManager != null )
+		{
 			Singletons.timeManager.OnTimeWarpChangedEvent -= OnTimeWarpChanged;
+			Singletons.soundManager.OnVolumeChanged -= OnVolumeChanged;
+		}
 	}
 	
 	
@@ -59,6 +65,13 @@ public class SoundSource : MonoBehaviour
 	
 	
 	
+	void OnVolumeChanged( float volume )
+	{
+		audio.volume = volume * originalVolume;
+	}
+
+
+
 	public void Play ()
 	{
 		if ( false == audio.enabled )

@@ -1,4 +1,4 @@
-Movement Experiments v0.4
+Movement Experiments
 
 Miniexperiment to test different movement systems to reduce simulator sickness.
 
@@ -29,7 +29,7 @@ Stroboscopic:
 	Stroboscopic view when you move or turn. It strobes by showing x frames in a row, then showing darkness for y frames in a row. To decrease/increase x (shown frames), press 7 and 8. To decrease/increase y (black frames), press 9 and 0.
 
 
-I get much less simulator sickness in both the Canvas and the 3rd person modes. The canvas mode is a bit more immersive, but the 3rd person mode lets me assume the avatar's identity more. Stroboscopic view doesn't work for me, maybe because it doesn't darken the entire screen all at once for some reason but only partly (vsync issue, timewarp or something?).
+I get much less simulator sickness in both the Canvas and the 3rd person modes. The canvas mode is a bit more immersive, but the 3rd person mode lets me assume the avatar's identity more.
 
 
 Credits:
@@ -44,6 +44,7 @@ Arrows for stepwise teleportation mode: http://opengameart.org/content/arrow-sym
 
 Changelog:
 
+0.6: Update for SDK 0.4.3.
 0.5: Added stepwise teleportation mode.
 0.4: Added different canvas textures to cycle through. 3rd person mode starts a bit behind the avatar.
 0.3: New Oculus SDK 0.4.2

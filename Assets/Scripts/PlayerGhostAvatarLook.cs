@@ -109,33 +109,12 @@ public class PlayerGhostAvatarLook : MonoBehaviour
 	
 	
 	
-	void Reset()
-	{
-		OVRDevice.ResetOrientation();
-		playerHead.Reset();
-	}
-	
-	
-	
 	void Update()
 	{
 		if ( Input.GetMouseButtonDown( 1 ) )
 			FadeToGhostMode( );
 		else if ( Input.GetMouseButtonUp( 1 ) )
 			FadeToNormalMode( );
-			
-		if (Input.GetKeyDown(KeyCode.Escape))
-			Application.Quit();
-		else if ( Input.GetKeyDown (KeyCode.Space))
-		{
-			Reset();
-			
-			if ( false == hasRecentered )
-			{
-				transform.Find ("MessageText").gameObject.SetActive ( false );
-				hasRecentered = true;
-			}
-		}
 	}
 	
 	
