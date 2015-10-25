@@ -45,7 +45,7 @@ public class HoloGrid : MonoBehaviour
 
     void Awake()
     {
-        mat = renderer.material;
+        mat = GetComponent<Renderer>().material;
 		transparentShader = mat.shader;
 		fadeSpeed = 1;
     }
@@ -83,7 +83,7 @@ public class HoloGrid : MonoBehaviour
 
 	public void SetUseTransparentShader( bool useTransparentShader )
 	{
-		renderer.material.shader = useTransparentShader	? transparentShader
+		GetComponent<Renderer>().material.shader = useTransparentShader	? transparentShader
 																					: nonTransparentShader;
 	}
 

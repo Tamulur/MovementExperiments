@@ -13,7 +13,7 @@ public class SetAllMaterialsToMaxBrightness : MonoBehaviour
 
 	static void BrightenColors( Transform trans )
 	{
-		Renderer rend = trans.renderer;
+		Renderer rend = trans.GetComponent<Renderer>();
 		if ( rend != null )
 			foreach (Material mat in rend.sharedMaterials)
 				mat.color = Color.white;

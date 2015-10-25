@@ -13,7 +13,7 @@ public class SetAllShadersToAO : MonoBehaviour
 
 	static void SetAllShadersToAO_recursively( Transform trans )
 	{
-		Renderer rend = trans.renderer;
+		Renderer rend = trans.GetComponent<Renderer>();
 		if ( rend != null )
 			foreach (Material mat in rend.sharedMaterials)
 				if ( mat.shader.name == "Diffuse" )

@@ -75,8 +75,8 @@ public class MotionController : MonoBehaviour
 		characterController.Move(Vector3.zero);
 		canvasSphere = GetComponentInChildren<CanvasSphere>();
 		
-		controlCameraLeft = transform.Find ("OVR_anchor/OVRCameraRig/LeftEyeAnchor").GetComponent<ControlCamera>();
-		controlCameraRight = transform.Find ("OVR_anchor/OVRCameraRig/RightEyeAnchor").GetComponent<ControlCamera>();
+		controlCameraLeft = transform.Find ("OVR_anchor/OVRCameraRig/TrackingSpace/LeftEyeAnchor").GetComponent<ControlCamera>();
+		controlCameraRight = transform.Find ("OVR_anchor/OVRCameraRig/TrackingSpace/RightEyeAnchor").GetComponent<ControlCamera>();
 	}
 	
 	

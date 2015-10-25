@@ -31,7 +31,7 @@ public class ControlCamera : MonoBehaviour
 	
 	void Awake()
 	{
-		eyeCamera = camera;
+		eyeCamera = GetComponent<Camera>();
 		darknessGO = transform.Find ("Darkness").gameObject;
 	}
 	

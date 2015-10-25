@@ -13,7 +13,7 @@ public class ReplaceDXT1InMaterials : MonoBehaviour
 
 	static void ReplaceDXT1( Transform trans )
 	{
-		Renderer rend = trans.renderer;
+		Renderer rend = trans.GetComponent<Renderer>();
 		if ( rend != null )
 			foreach (Material mat in rend.sharedMaterials)
 			{

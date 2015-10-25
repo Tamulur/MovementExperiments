@@ -221,8 +221,8 @@ public class MiscUtils
 		{
 			dummyObject = GameObject.CreatePrimitive( PrimitiveType.Cube );
 			dummyObject.transform.localScale = scale * Vector3.one;
-			dummyObject.renderer.material = Resources.Load ("DummyObjectMaterial") as Material;
-			GameObject.Destroy (dummyObject.collider);
+			dummyObject.GetComponent<Renderer>().material = Resources.Load ("DummyObjectMaterial") as Material;
+			GameObject.Destroy (dummyObject.GetComponent<Collider>());
 			dummyObject.name = name;
 			
 			dummyObjects[ name ] = dummyObject;

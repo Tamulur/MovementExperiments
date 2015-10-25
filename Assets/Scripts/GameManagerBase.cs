@@ -32,11 +32,11 @@ public class GameManagerBase : MonoBehaviour
 	{
 		if ( false == Application.isEditor )
 		{
-			Screen.showCursor = false;
-			Screen.lockCursor = true;
+			Cursor.visible = false;
+			Cursor.lockState = CursorLockMode.Locked;
 		}
 
-		OVRManager.instance.usePositionTracking = false;
+		//OVRManager.instance.usePositionTracking = false;
 	}
 
 
@@ -111,7 +111,7 @@ public class GameManagerBase : MonoBehaviour
 		yield return null;
 
 		Reset();
-		OVRManager.instance.usePositionTracking = true;
+		//OVRManager.instance.usePositionTracking = true;
 		FadeIn( duration: 2, then: StartGame );
 	}
 

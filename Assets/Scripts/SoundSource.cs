@@ -32,7 +32,7 @@ public class SoundSource : MonoBehaviour
 	
 	void Awake ()
 	{
-		audio = base.audio;
+		audio = base.GetComponent<AudioSource>();
 		originalVolume = audio.volume;
 		Singletons.timeManager.OnTimeWarpChangedEvent += OnTimeWarpChanged;
 		Singletons.soundManager.OnVolumeChanged += OnVolumeChanged;

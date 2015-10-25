@@ -31,6 +31,12 @@ Stroboscopic:
 
 I get much less simulator sickness in both the Canvas and the 3rd person modes. The canvas mode is a bit more immersive, but the 3rd person mode lets me assume the avatar's identity more.
 
+Tore Knabe
+http://tore-knabe.com/virtual-reality
+tamulur@yahoo.com
+
+
+
 
 Credits:
 
@@ -40,12 +46,3 @@ Music: Kevin McLeod http://incompetech.com/music/royalty-free/index.html?isrc=US
 Player's footsteps: cris http://freesound.org/people/cris/sounds/167686/
 Arrows for stepwise teleportation mode: http://opengameart.org/content/arrow-symbols
 
-
-
-Changelog:
-
-0.6: Update for SDK 0.4.3.
-0.5: Added stepwise teleportation mode.
-0.4: Added different canvas textures to cycle through. 3rd person mode starts a bit behind the avatar.
-0.3: New Oculus SDK 0.4.2
-0.2: Added stroboscopic mode.

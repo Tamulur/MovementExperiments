@@ -9,7 +9,7 @@ SubShader {
 	LOD 200
 
 CGPROGRAM
-            #pragma surface surf Standard
+#pragma surface surf MyLighting
 
 	sampler2D _MainTex;
 	float4 _Goal;
@@ -17,7 +17,7 @@ CGPROGRAM
 	float _textureSaturation;
 
 
-	half4 LightingStandard (SurfaceOutput s, half3 lightDir, half atten) {
+	half4 LightingMyLighting(SurfaceOutput s, half3 lightDir, half atten) {
 		half NdotL = dot (s.Normal, lightDir);
 		half4 c;
 		half3 white =half3(0,0,0);
@@ -25,20 +25,20 @@ CGPROGRAM
 		c.a = s.Alpha;
 		return c;
 	}
-
-    inline fixed4 LightingStandard_SingleLightmap (SurfaceOutput s, fixed4 color) {
+	
+    inline fixed4 LightingMyLighting_SingleLightmap (SurfaceOutput s, fixed4 color) {
     	half3 gray = half3(0.5, 0.5, 0.5);
     	half3 black = half3(0, 0, 0);
         half3 lm = lerp(gray, black, _textureSaturation) + DecodeLightmap (color);
         return fixed4(lm, 0);
     }
 
-    inline fixed4 LightingStandard_DualLightmap (SurfaceOutput s, fixed4 totalColor, fixed4 indirectOnlyColor, half indirectFade) {
+    inline fixed4 LightingMyLighting_DualLightmap (SurfaceOutput s, fixed4 totalColor, fixed4 indirectOnlyColor, half indirectFade) {
         half3 lm = lerp (DecodeLightmap (indirectOnlyColor), DecodeLightmap (totalColor), indirectFade);
         return fixed4(lm, 0);
     }
 
-    inline fixed4 LightingStandard_StandardLightmap (SurfaceOutput s, fixed4 color, fixed4 scale, bool surfFuncWritesNormal) {
+    inline fixed4 LightingMyLighting_StandardLightmap (SurfaceOutput s, fixed4 color, fixed4 scale, bool surfFuncWritesNormal) {
         UNITY_DIRBASIS
 
         half3 lm = DecodeLightmap (color);
@@ -50,8 +50,8 @@ CGPROGRAM
             lm *= dot (normalInRnmBasis, scalePerBasisVector);
         }
 
-        return fixed4(lm, 0);
-    }
+		return fixed4(lm, 0);
+	}
 
 
 struct Input {

@@ -37,7 +37,6 @@ public class Player : MonoBehaviour
 		}
 		State state = State.Normal;
 		
-		GoTween stateTween;
 		GhostAvatar ghostAvatar;
 
 		float teleportStepDuration = 0.05f;
@@ -215,7 +214,7 @@ public class Player : MonoBehaviour
 	
 	void OnGameStart()
 	{
-		ShowControlMenu();
+		ShowControlMenu( duration: 8);
 	}
 
 
@@ -261,7 +260,7 @@ public class Player : MonoBehaviour
 
 
 
-	void ShowControlMenu( float duration = 3)
+	void ShowControlMenu( float duration = 4)
 	{
 		string oT1, cT1, oT2, cT2, oT3, cT3, oT4, cT4, oT5, cT5;
 		oT1 = cT1 = oT2 = cT2 = oT3 = cT3 = oT4 = cT4 = oT5 = cT5 = "";
@@ -327,7 +326,6 @@ public class Player : MonoBehaviour
 		{
 			ChangeToState( State.Normal );
 			avatarXform.rotation = ghostAvatar.transform.rotation;
-			yield break;
 		}
 	}
 

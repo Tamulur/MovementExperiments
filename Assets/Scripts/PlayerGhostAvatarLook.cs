@@ -29,8 +29,8 @@ public class PlayerGhostAvatarLook : MonoBehaviour
 	
 	void Awake()
 	{
-		Screen.showCursor = false;
-		Screen.lockCursor = true;
+		Cursor.visible = false;
+		Cursor.lockState = CursorLockMode.Locked;
 		
 		animator = GetComponent<Animator>();
 		playerHead = GetComponent<PlayerHead>();
