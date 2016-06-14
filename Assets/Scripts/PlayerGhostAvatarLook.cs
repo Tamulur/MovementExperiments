@@ -111,9 +111,9 @@ public class PlayerGhostAvatarLook : MonoBehaviour
 	
 	void Update()
 	{
-		if ( Input.GetMouseButtonDown( 1 ) )
+		if ( Input.GetMouseButtonDown( 1 ) || OVRInput.GetDown(OVRInput.Button.SecondaryShoulder) )
 			FadeToGhostMode( );
-		else if ( Input.GetMouseButtonUp( 1 ) )
+		else if ( Input.GetMouseButtonUp( 1 ) || OVRInput.GetUp(OVRInput.Button.SecondaryShoulder) )
 			FadeToNormalMode( );
 	}
 	

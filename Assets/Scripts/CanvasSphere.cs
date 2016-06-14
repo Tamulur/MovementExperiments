@@ -43,7 +43,7 @@ public class CanvasSphere : MonoBehaviour
 		float speed = targetAlpha < alpha ? 0.5f : 1;
 		alpha = Mathf.Lerp ( alpha, targetAlpha, Time.unscaledDeltaTime * 10 * speed);
 
-		if ( Input.GetKeyDown( KeyCode.G ) )
+		if ( Input.GetKeyDown( KeyCode.G ) || OVRInput.GetDown(OVRInput.Button.Two) )
 		{
 			textureIndex = (textureIndex+1) % textures.Length;
 			canvasMaterial.mainTexture = textures[textureIndex];

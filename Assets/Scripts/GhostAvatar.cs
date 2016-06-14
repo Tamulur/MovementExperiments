@@ -159,6 +159,9 @@ public class GhostAvatar : MonoBehaviour
 			if ( path == null && lineRenderer.enabled )
 				HidePath();
 
+			Vector2 secondaryAxis = OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick);
+
+			transform.Rotate( Vector3.up, Time.deltaTime * 200 * secondaryAxis.x );
 			transform.Rotate( Vector3.up, Time.deltaTime * 1000 * Input.GetAxis("Mouse X") );
 		}
 	}

@@ -131,14 +131,18 @@ public class MotionController : MonoBehaviour
 		float forwardSpeed = 0;
 		float sideSpeed = 0;
 		float direction = 0;
-		bool isRunning = Input.GetKey (KeyCode.LeftShift );
+		bool isRunning = Input.GetKey (KeyCode.LeftShift ) || OVRInput.Get(OVRInput.Button.PrimaryShoulder);
 		bool isMovingOrTurning = false;
 		
+		Vector2 primaryAxis = OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick);
+		Vector2 secondaryAxis = OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick);
+
 		//*** forward speed
 		{
-			if (Input.GetKey(KeyCode.W))
+			forwardSpeed = primaryAxis.y;
+			if (Input.GetKey(KeyCode.W) )
 				forwardSpeed = 1;
-			else if (Input.GetKey(KeyCode.S))
+			else if (Input.GetKey(KeyCode.S) )
 				forwardSpeed = -1;
 			
 			forwardSpeed *= kForwardSpeedFactor;
@@ -154,6 +158,7 @@ public class MotionController : MonoBehaviour
 		
 		//*** direction
 		{
+			direction = secondaryAxis.x * kMouseSensitivity;
 			float mouseDiff = Input.GetAxis("Mouse X");
 			if ( Mathf.Abs( mouseDiff ) > 0 )
 				direction = mouseDiff * kMouseSensitivity;
@@ -195,22 +200,22 @@ public class MotionController : MonoBehaviour
 		controlCameraRight.useStrobing = shouldStrobe;
 		
 		
-		if ( Input.GetKeyDown (KeyCode.Alpha7 ) )
+		if ( Input.GetKeyDown (KeyCode.Alpha7 ) || OVRInput.GetDown(OVRInput.Button.DpadDown) )
 		{
 			kShowFrames = Mathf.Max(1, kShowFrames - 1 );
 			ShowFrameNumbers();
 		}
-		else if ( Input.GetKeyDown (KeyCode.Alpha8 ))
+		else if ( Input.GetKeyDown (KeyCode.Alpha8 ) || OVRInput.GetDown(OVRInput.Button.DpadUp) )
 		{
 			kShowFrames++;
 			ShowFrameNumbers();
 		}
-		else if ( Input.GetKeyDown (KeyCode.Alpha9 ) )
+		else if ( Input.GetKeyDown (KeyCode.Alpha9 ) || OVRInput.GetDown(OVRInput.Button.DpadLeft) )
 		{
 			kHideFrames = Mathf.Max (1, kHideFrames - 1);
 			ShowFrameNumbers();
 		}
-		else if ( Input.GetKeyDown (KeyCode.Alpha0))
+		else if ( Input.GetKeyDown (KeyCode.Alpha0) || OVRInput.GetDown(OVRInput.Button.DpadRight) )
 		{
 			kHideFrames++;
 			ShowFrameNumbers();

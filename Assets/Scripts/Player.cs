@@ -59,7 +59,6 @@ public class Player : MonoBehaviour
 		originalParentXform = transform.parent;
 		
 		Singletons.timeManager.OnTimeWarpChangedEvent += OnTimeWarpChanged;
-		Singletons.gameManager.OnGameStart += OnGameStart;
 	}
 	
 	
@@ -95,7 +94,7 @@ public class Player : MonoBehaviour
 
 			case ControlMode.CanvasTexture:
 				Singletons.guiManager.ShowMessage("Canvas mode:\n" +
-																		"Press G to cycle through\n" +
+																		"Press G or Controller B to cycle through\n" +
 																		"different canvas textures.", duration: 5);
 				break;
 				
@@ -103,7 +102,7 @@ public class Player : MonoBehaviour
 				transform.parent = null;
 				motionController.Deactivate();
 				Singletons.guiManager.ShowMessage(	"Third Person Control:\n" +
-																		"Keep right mouse button\n"+	
+																		"Keep RMB or right shoulder button\n"+	
 																		"pressed and move your avatar,\n" +
 																		"then release to teleport your view.", duration: 5);
 				break;
@@ -111,18 +110,20 @@ public class Player : MonoBehaviour
 			case ControlMode.StepTeleport:
 				motionController.Deactivate();
 				Singletons.guiManager.ShowMessage("Stepwise teleport mode:\n" +
-																		"Keep right mouse button pressed and\n"+
+																		"Keep RMB or right shoulder button pressed and\n"+
 																		"look where you want to go. Then release.\n" +
-																		"7, 8: dec-/increase step size\n" +
-																		"9, 0: dec-/increase step duration\n", duration: 5);
+																		"7 or DpadDown: decrease step size\n" +
+																		"8 or DpadUp: increase step size\n" +
+																		"9 or DpadLeft: decrease step duration\n" +
+																		"0 or DpadRight: increase step duration\n", duration: 5);
 				break;
 
 			case ControlMode.Stroboscopic:
 				Singletons.guiManager.ShowMessage (	"Stroboscopic:\n" +
-																			"7: decrease ShownFrames\n" +
-																			"8: increase ShownFrames\n" +
-																			"9: decrease HiddenFrames\n" +
-																			"0: increase HiddenFrames\n", duration: 5);
+																			"7 or DpadDown: decrease ShownFrames\n" +
+																			"8 or DpadUp: increase ShownFrames\n" +
+																			"9 or DpadLeft: decrease HiddenFrames\n" +
+																			"0 or DpadRight: increase HiddenFrames\n", duration: 5);
 				break;
 		}
 		
@@ -212,13 +213,6 @@ public class Player : MonoBehaviour
 	
 	
 	
-	void OnGameStart()
-	{
-		ShowControlMenu( duration: 8);
-	}
-
-
-
 	void OnTimeWarpChanged ( float timeWarp01, float absoluteTimeWarp )
 	{ }
 	
@@ -295,13 +289,20 @@ public class Player : MonoBehaviour
 																	oT1 + "1: Standard" + cT1 + "\n" +
 																	oT2 + "2: Canvas" + cT2 + "\n" +
 																	oT3 + "3: Third person" + cT3 + "\n" +
-																	oT4 + "4: Stepwise teleport" + cT4 +
+																	oT4 + "4: Stepwise teleport" + cT4 + "\n" +
 																	oT5 + "4: Stroboscopic" + cT5,
 																	duration: duration );
 	}
 	
 	
 	
+	void Start()
+	{
+		ShowControlMenu( duration: 8);
+	}
+
+
+
 	void TeleportStepwiseAlongPath()
 	{
 		ChangeToState( State.Teleporting );
@@ -345,12 +346,30 @@ public class Player : MonoBehaviour
 			return;
 
 				bool controlModeUsesRightMouseButton = controlMode == ControlMode.ThirdPerson || controlMode == ControlMode.StepTeleport;
-		if ( controlModeUsesRightMouseButton && Input.GetMouseButtonDown( 1 ) )
+		if ( controlModeUsesRightMouseButton && (Input.GetMouseButtonDown( 1 ) || OVRInput.GetDown(OVRInput.Button.SecondaryShoulder) ))
 			FadeToGhostMode( );
-		else if ( controlModeUsesRightMouseButton && Input.GetMouseButtonUp( 1 ) )
+		else if ( controlModeUsesRightMouseButton && (Input.GetMouseButtonUp( 1 ) || OVRInput.GetUp(OVRInput.Button.SecondaryShoulder) ))
 			FadeToNormalMode( );
 			
 		bool isNormalMode = state == State.Normal;
+
+		if ( OVRInput.GetDown(OVRInput.Button.SecondaryIndexTrigger) )
+		{
+			ControlMode newControlMode = controlMode + 1;
+			if ( (int) newControlMode >= Enum.GetNames(typeof(ControlMode)).Length )
+				newControlMode = 0;
+
+			ChangeControlMode( newControlMode );
+		}
+		
+		if ( OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger) )
+		{
+			ControlMode newControlMode = controlMode - 1;
+			if ( (int) newControlMode < 0 )
+				newControlMode = (ControlMode) (Enum.GetNames(typeof(ControlMode)).Length - 1);
+
+			ChangeControlMode( newControlMode );
+		}
 		
 		if ( isNormalMode && Input.GetKeyDown ( KeyCode.Alpha1 ) )
 			ChangeControlMode( ControlMode.Standard );
@@ -363,22 +382,22 @@ public class Player : MonoBehaviour
 		else if ( isNormalMode && Input.GetKeyDown ( KeyCode.Alpha5 ) )
 			ChangeControlMode ( ControlMode.Stroboscopic );
 
-		else if ( controlMode == ControlMode.StepTeleport && Input.GetKeyDown( KeyCode.Alpha9 ) )
+		else if ( controlMode == ControlMode.StepTeleport && (Input.GetKeyDown( KeyCode.Alpha9 ) || OVRInput.GetDown(OVRInput.Button.DpadLeft)) )
 		{
 			teleportStepDuration = Mathf.Max( 0.01f, teleportStepDuration - 0.01f );
 			Singletons.guiManager.ShowMessage("Teleport step duration: " + teleportStepDuration);
 		}
-		else if ( controlMode == ControlMode.StepTeleport && Input.GetKeyDown( KeyCode.Alpha0 ) )
+		else if ( controlMode == ControlMode.StepTeleport && (Input.GetKeyDown( KeyCode.Alpha0 ) || OVRInput.GetDown(OVRInput.Button.DpadRight)) )
 		{
 			teleportStepDuration = Mathf.Min( 0.2f, teleportStepDuration + 0.01f );
 			Singletons.guiManager.ShowMessage("Teleport step duration: " + teleportStepDuration);
 		}
-		else if ( controlMode == ControlMode.StepTeleport && Input.GetKeyDown( KeyCode.Alpha7 ) )
+		else if ( controlMode == ControlMode.StepTeleport && (Input.GetKeyDown( KeyCode.Alpha7 ) || OVRInput.GetDown(OVRInput.Button.DpadDown)) )
 		{
 			ghostAvatar.stepSize = Mathf.Max( 0.1f, ghostAvatar.stepSize - 0.2f );
 			Singletons.guiManager.ShowMessage("Stepsize: " + ghostAvatar.stepSize);
 		}
-		else if ( controlMode == ControlMode.StepTeleport && Input.GetKeyDown( KeyCode.Alpha8 ) )
+		else if ( controlMode == ControlMode.StepTeleport && (Input.GetKeyDown( KeyCode.Alpha8 ) || OVRInput.GetDown(OVRInput.Button.DpadUp)) )
 		{
 			ghostAvatar.stepSize = Mathf.Min( 10f, ghostAvatar.stepSize + 0.2f );
 			Singletons.guiManager.ShowMessage("Stepsize: " + ghostAvatar.stepSize);

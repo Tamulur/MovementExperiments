@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections;
+using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using UnityEngine;
 
 
@@ -8,10 +8,7 @@ public class GameManagerBase : MonoBehaviour
 {
 	# region fields
 
-		public bool hasRecentered { get; private set; }
 		public bool isGameStarted { get; private set; }
-
-		bool showingRecenterMessage;
 
 		enum FadeState {
 			Normal,
@@ -21,8 +18,7 @@ public class GameManagerBase : MonoBehaviour
 		}
 		FadeState fadeState = FadeState.Darkness;
 
-		public delegate void OnGameStartCallback ( );
-		public event OnGameStartCallback OnGameStart;
+		ScreenFader screenFader;
 
 	# endregion
 
@@ -35,8 +31,6 @@ public class GameManagerBase : MonoBehaviour
 			Cursor.visible = false;
 			Cursor.lockState = CursorLockMode.Locked;
 		}
-
-		//OVRManager.instance.usePositionTracking = false;
 	}
 
 
@@ -55,7 +49,8 @@ public class GameManagerBase : MonoBehaviour
 		}
 
 		fadeState = FadeState.FadingIn;
-		Singletons.player.FadeFromDark( duration:duration,
+		Singletons.soundManager.TweenVolumeTo(1, duration);
+		screenFader.FadeIn( duration:duration,
 														onComplete: () => {
 														fadeState = FadeState.Normal;
 														if ( then != null )
@@ -74,7 +69,9 @@ public class GameManagerBase : MonoBehaviour
 		}
 
 		fadeState = FadeState.FadingOut;
-		Singletons.player.FadeToDark( onComplete: () => {
+		const float kDuration = 2;
+		Singletons.soundManager.TweenVolumeTo(0, kDuration);
+		screenFader.FadeOut(duration: kDuration, onComplete: () => {
 											fadeState = FadeState.Darkness;
 											if ( then != null )
 												then();
@@ -92,7 +89,9 @@ public class GameManagerBase : MonoBehaviour
 	
 	void Start()
 	{
-		Singletons.player.SetToDark();
+		screenFader = FindObjectOfType<ScreenFader>();
+
+		screenFader.FadeIn( duration: Application.isEditor ? 2 : 7, onComplete: StartGame );
 	}
 
 
@@ -100,59 +99,23 @@ public class GameManagerBase : MonoBehaviour
 	protected virtual void StartGame()
 	{
 		isGameStarted = true;
-		if ( OnGameStart != null )
-			OnGameStart();
-	}
-
-
-
-	IEnumerator ResetAndStartGameNextFrame()
-	{
-		yield return null;
-
-		Reset();
-		//OVRManager.instance.usePositionTracking = true;
-		FadeIn( duration: 2, then: StartGame );
 	}
 
 
 
 	protected virtual void Update()
 	{
-		bool isHSWShowing = OVRManager.isHSWDisplayed;
-
 		if (Input.GetKeyDown(KeyCode.Escape))
 			Application.Quit();
-		else if (Input.anyKeyDown && isHSWShowing)
-			OVRManager.DismissHSWDisplay();
 
 		if ( fadeState == FadeState.FadingIn || fadeState == FadeState.FadingOut )
 			return;
 
-		if ( false == hasRecentered && false == isHSWShowing && false == showingRecenterMessage )
-		{
-			Singletons.guiManager.ShowMessage("Press B to recenter", 0, notificationMode:GUIManager.NotificationMode.FadeOut);
-			showingRecenterMessage = true;
-		}
-
 
 		//*** Check keyboard
 		{
-			if ( Input.GetKeyDown (KeyCode.B))
-			{
-				if ( showingRecenterMessage )
-				{
-					if ( false == isHSWShowing && false == hasRecentered )
-					{
-						Singletons.guiManager.HideGUI();
-						showingRecenterMessage = false;
-						hasRecentered = true;
-						StartCoroutine(ResetAndStartGameNextFrame());
-					}
-				}
-				else
-					Reset();
-			}
+			if ( Input.GetKeyDown (KeyCode.Space) || OVRInput.GetDown(OVRInput.Button.One) )
+				Reset();
 
 			if ( isGameStarted )
 				CheckKeyboardForRunningGame();

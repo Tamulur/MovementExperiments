@@ -7,7 +7,6 @@ public class Gramophone : MonoBehaviour
 	#region fields
 	
 		Transform discXform;
-		AudioSource soundSource;
 		
 	#endregion
 	
@@ -16,15 +15,6 @@ public class Gramophone : MonoBehaviour
 	void Awake()
 	{
 		discXform = transform.Find ("Old_gramophone_Disc_Bone");
-		Singletons.gameManager.OnGameStart += OnGameStart;
-		soundSource = GetComponentInChildren<AudioSource>();
-	}
-	
-	
-	
-	void OnGameStart()
-	{
-		soundSource.Play();
 	}
 	
 	
